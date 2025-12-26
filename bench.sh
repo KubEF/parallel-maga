@@ -32,10 +32,10 @@ mkdir -p "$HYPERFINE_DIR"
 if [ ! -f "$HYPERFINE_DIR/hyperfine" ]; then
     echo "Скачивание hyperfine..."
     wget -q "$HYPERFINE_URL" -O "$HYPERFINE_ARCHIVE"
-    
+
     echo "Распаковка hyperfine..."
     tar -xzf "$HYPERFINE_ARCHIVE" --strip-components=1 -C "$HYPERFINE_DIR"
-    
+
     # Удаляем архив
     rm -f "$HYPERFINE_ARCHIVE"
 fi
@@ -52,29 +52,31 @@ else
     exit 1
 fi
 
+SCRIPTS="scripts"
+
 # 3. Запуск основного скрипта
 echo "3. Запуск основного скрипта..."
 
 # Проверяем наличие основных файлов
-if [ ! -f "main_script.py" ]; then
+if [ ! -f "$SCRIPTS/main_script.py" ]; then
     echo "Ошибка: файл main_script.py не найден!"
     exit 1
 fi
 
-if [ ! -f "make_measure.py" ]; then
+if [ ! -f "$SCRIPTS/make_measure.py" ]; then
     echo "Ошибка: файл make_measure.py не найден!"
     exit 1
 fi
 
-if [ ! -f "make_graphs.py" ]; then
+if [ ! -f "$SCRIPTS/make_graphs.py" ]; then
     echo "Ошибка: файл make_graphs.py не найден!"
     exit 1
 fi
 
 # Проверяем наличие C++ файлов по умолчанию
 SEQ_SOURCE="labA_07.cpp"
-PARALLEL_SOURCE="optimizes-versions/labA_07_collapse.cpp"
-MPI_SOURCE="optimizes-versions/labA_07_mpi.cpp"
+PARALLEL_SOURCE="optimized-versions/labA_07_collapse.cpp"
+MPI_SOURCE="optimized-versions/labA_07_mpi.cpp"
 
 # Если файлы не существуют, используем переданные аргументы
 if [ $# -ge 1 ]; then
@@ -106,7 +108,7 @@ echo "Последовательная версия: $SEQ_SOURCE"
 echo "Параллельная версия omp: $PARALLEL_SOURCE"
 echo "Параллельная версия mpi: $MPI_SOURCE"
 
-python main_script.py "$SEQ_SOURCE" "$PARALLEL_SOURCE" "$MPI_SOURCE"
+python $SCRIPTS/main_script.py "$SEQ_SOURCE" "$PARALLEL_SOURCE" "$MPI_SOURCE"
 
 echo "=== Замеры завершены! ==="
 echo "Результаты сохранены в директории 'result/'"
