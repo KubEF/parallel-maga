@@ -27,7 +27,7 @@ def parse_results(outup_file):
     return means
 
 
-def draw_graphs_at_one(parallel_results, non_parallel, graphs_dir):
+def draw_graphs_at_one(parallel_results, non_parallel, graphs_dir, graph_file):
     processors = np.array(range(1, os.cpu_count() + 1, 3))  # type: ignore
     ideal_speedup = processors
     plt.style.use("seaborn-v0_8")
@@ -62,10 +62,10 @@ def draw_graphs_at_one(parallel_results, non_parallel, graphs_dir):
     ax.legend(loc="upper left", fontsize=10)
 
     plt.tight_layout()
-    plt.savefig(graphs_dir / Path("scale_ability_all.png"))
+    plt.savefig(graphs_dir / Path(graph_file))
 
 
-def make_graph(json_data_parallel, json_data_seq, graphs_dir):
+def make_graph(json_data_parallel, json_data_seq, graphs_dir, graph_file):
     results = parse_results(json_data_parallel)
     if results is None:
         print("Результатов нет!")
@@ -76,7 +76,8 @@ def make_graph(json_data_parallel, json_data_seq, graphs_dir):
         print("Результатов последовательной версии нет!")
         sys.exit(1)
 
-    draw_graphs_at_one(results, seq_res, graphs_dir)
+    draw_graphs_at_one(results, seq_res, graphs_dir, graph_file)
+    print("finish draw graph")
 
 
 if __name__ == "__main__":
@@ -84,4 +85,9 @@ if __name__ == "__main__":
     parser.add_argument("json_data_parallel", help="Результаты замеров в json формате")
     parser.add_argument("json_data_seq", help="Результаты замеров в json формате")
     args = parser.parse_args()
-    make_graph(args.json_data_parallel, args.json_data_seq, Path("graphs"))
+    make_graph(
+        args.json_data_parallel,
+        args.json_data_seq,
+        Path("graphs"),
+        "scale_ability_omp.png",
+    )
