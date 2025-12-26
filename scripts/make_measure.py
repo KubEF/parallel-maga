@@ -80,7 +80,7 @@ def run_bench(
         print(f"Ошибка: файл {source_file} не существует")
         sys.exit(1)
 
-    executable = compile_cpp(source_file, executable_name, is_mpi)
+    executable = compile_cpp(source_file, executable_name, None, is_mpi)
     if executable is None:
         print("Какие-то проблемы с компиляцией")
         return
